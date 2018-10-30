@@ -1,11 +1,12 @@
 package c_02_utery_18_15.view;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Raster extends Canvas {
+public class Raster extends JPanel {
 
     public static final int WIDTH = 800;
     public static final int HEIGHT = 600;
@@ -16,6 +17,12 @@ public class Raster extends Canvas {
         // inicializace image, nastavení rozměrů (nastavení typu - pro nás nedůležité)
         bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         setLoop();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(bi, 0, 0, null);
     }
 
     private void setLoop() {

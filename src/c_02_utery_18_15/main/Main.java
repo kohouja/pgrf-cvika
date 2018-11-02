@@ -13,6 +13,8 @@ public class Main {
             new PgrfController(window);
             window.setVisible(true);
         });
+
+
         // https://www.google.com/search?q=SwingUtilities.invokeLater
         // https://www.javamex.com/tutorials/threads/invokelater.shtml
     }

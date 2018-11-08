@@ -1,7 +1,9 @@
 package c_02_utery_18_15.controller;
 
+import c_02_utery_18_15.Fill.Patterns;
 import c_02_utery_18_15.Fill.ScanLine;
 import c_02_utery_18_15.Fill.SeedFill;
+import c_02_utery_18_15.fileHandler.FileHandler;
 import c_02_utery_18_15.model.Point;
 import c_02_utery_18_15.renderer.Renderer;
 import c_02_utery_18_15.view.PgrfWindow;
@@ -10,25 +12,33 @@ import c_02_utery_18_15.view.Raster;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PgrfController {
-
+    private PgrfWindow pgrfWindow;
     private Raster raster;
     private Renderer renderer;
     private SeedFill seedFill;
+    private boolean seedFillSwitch;
+    private Patterns patterns;
+    private FileHandler fileHandler;
     private final List<Point> polygonPoints = new ArrayList<>();
+    private final List<Point> clipPoints = new ArrayList<>();
     private final List<Point> linePoints = new ArrayList<>();
     private final ScanLine scanLine = new ScanLine();
-    private boolean seedFillSwitch;
+
+
 
     public PgrfController(PgrfWindow window) {
         initObjects(window);
         initListeners();
+
     }
 
     private void initObjects(PgrfWindow window) {
+        this.pgrfWindow = window;
         raster = new Raster();
         window.add(raster); // vložit plátno do okna
 
@@ -41,28 +51,37 @@ public class PgrfController {
         seedFill = new SeedFill();
         seedFill.setRaster(raster);
 
-
+        patterns = new Patterns();
+        patterns.setRaster(raster);
 
 
     }
 
     private void initListeners() {
-        raster.addMouseListener(new MouseAdapter() {
+        pgrfWindow.addComponentListener(new ComponentAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
-               if(!e.isControlDown()){
-                   polygonPoints.add(new Point(e.getX(), e.getY()));
-                   if(polygonPoints.size() == 1){
-                       polygonPoints.add(new Point(e.getX(), e.getY()));
-                   }else if(SwingUtilities.isRightMouseButton(e)){
-                       linePoints.add(new Point(e.getX(), e.getY()));
-                       linePoints.add(new Point(e.getX(), e.getY()));
-
-                   }
-                   update();
-               }
+            public void componentResized(ComponentEvent e) {
+                Dimension size = e.getComponent().getSize();
+                raster.resize(size);
             }
         });
+
+// raster.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//               if(!e.isControlDown()){
+//                   polygonPoints.add(new Point(e.getX(), e.getY()));
+//                   if(polygonPoints.size() == 1){
+//                       polygonPoints.add(new Point(e.getX(), e.getY()));
+//                   }else if(SwingUtilities.isRightMouseButton(e)){
+//                       linePoints.add(new Point(e.getX(), e.getY()));
+//                       linePoints.add(new Point(e.getX(), e.getY()));
+//
+//                   }
+//                   update();
+//               }
+//            }
+//        });
 
         raster.addMouseListener(new MouseAdapter() {
             @Override
@@ -80,25 +99,25 @@ public class PgrfController {
                 //renderer.drawPolygon(points);
             }
         });
-        raster.addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if(SwingUtilities.isLeftMouseButton(e)){
-                    polygonPoints.get(polygonPoints.size() - 1).x = e.getX();
-                    polygonPoints.get(polygonPoints.size() - 1).y = e.getY();
-                    renderer.drawPolygon(polygonPoints, 0x00ffff);
-
-                }else if(SwingUtilities.isRightMouseButton(e)){
-                   linePoints.get(linePoints.size() - 1).x = e.getX();
-                   linePoints.get(linePoints.size() - 1).y = e.getY();
-                   renderer.drawLines();
-
-                }
-                update();
-//                raster.clear();
-//                renderer.drawDDA(400, 300, e.getX(), e.getY(), 0x00ffff);
-            }
-        });
+//        raster.addMouseMotionListener(new MouseAdapter() {
+//            @Override
+//            public void mouseDragged(MouseEvent e) {
+//                if(SwingUtilities.isLeftMouseButton(e)){
+//                    polygonPoints.get(polygonPoints.size() - 1).x = e.getX();
+//                    polygonPoints.get(polygonPoints.size() - 1).y = e.getY();
+//                    renderer.drawPolygon(polygonPoints, 0x00ffff);
+//
+//                }else if(SwingUtilities.isRightMouseButton(e)){
+//                   linePoints.get(linePoints.size() - 1).x = e.getX();
+//                   linePoints.get(linePoints.size() - 1).y = e.getY();
+//                   renderer.drawLines();
+//
+//                }
+//                update();
+////                raster.clear();
+////                renderer.drawDDA(400, 300, e.getX(), e.getY(), 0x00ffff);
+//            }
+//        });
         raster.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -134,6 +153,59 @@ public class PgrfController {
                     }else{
                         seedFillSwitch = false;
                     }
+                }
+            }
+        });
+
+        raster.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if(e.isAltDown()){
+                    raster.drawPixel(e.getX(), e.getY(), 0xffffff);
+                    patterns.getPointsList().add(new Point(e.getX(), e.getY(), new Color(0xffffff)));
+                }
+            }
+        });
+
+        raster.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_U) {
+                    patterns.getPointsList().add(patterns.findZeroPoint());
+                    if(fileHandler != null){
+                        fileHandler.setList(patterns.getPointsList());
+                    }else{
+                        fileHandler = new FileHandler(patterns.getPointsList());
+                    }
+
+                    fileHandler.save();
+                }
+
+
+            }
+        });
+        raster.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_N) {
+                    patterns.loadCigaro();
+//                    System.out.println(patterns.findZeroPoint().x);
+//                    System.out.println(patterns.findZeroPoint().y);
+
+                }
+
+
+            }
+        });
+
+
+        raster.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.isShiftDown()){
+                    patterns.transformPattern(e.getX(), e.getY());
+                    raster.clear();
+                    patterns.drawCigaro();
                 }
             }
         });

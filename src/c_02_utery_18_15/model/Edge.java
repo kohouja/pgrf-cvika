@@ -64,4 +64,16 @@ public class Edge {
             int intersection = (int)((y - q)/k);
        return intersection;
    }
+
+   public boolean isInside(Point point){
+        Point t = new Point(x2 - x1, y2 - y1);
+        Point n = new Point(t.y, -t.x);
+        Point v = new Point(point.x - x1, point.y - y1);
+
+        return (v.x * n.x + v.y * n.y < 0);
+   }
+
+   public Point getIntersection(Point v1, Point v2){
+        return null;
+   }
 }

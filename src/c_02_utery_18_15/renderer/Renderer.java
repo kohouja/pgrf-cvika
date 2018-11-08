@@ -3,6 +3,7 @@ package c_02_utery_18_15.renderer;
 import c_02_utery_18_15.model.Point;
 import c_02_utery_18_15.view.Raster;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Renderer {
@@ -84,8 +85,8 @@ public class Renderer {
     }
 
     public void drawPixel(int x, int y, int color) {
-//        if (x < 0 || x >= img.getWidth()) return;
-//        if (y < 0 || y >= img.getHeight()) return;
+        if (x < 0 || x >= raster.getResizableWidth()) return;
+        if (y < 0 || y >= raster.getResizableHeight()) return;
         // nastavit pixel do img
         raster.drawPixel(x, y, color);
     }
@@ -114,6 +115,27 @@ public class Renderer {
 
     }
 
+    public List<Point> clip(List<Point> polygon, List<Point> clipPolygon){
+//        in  - seznam vrcholu orezavaneho polygonu (na tabuli ten cerny)
+//        slip polygon - orezavaci polygon (na tabuli ten zleny)
+//        out - seznam vrcholu orezavaneho polygonu
+        List <Point> in = polygon;
+
+        Point p1 = null; //vloz posledni clip point
+
+        for(Point p2 : clipPolygon){
+            List<Point> out = new ArrayList<>();
+//            vytvor hranu z bodu p1 a p2
+//            Point v1 = in.last
+            for(Point v2: in){
+//                TODO algoritmus
+            }
+            p1 = p2;
+            in = out; // aktualizuj orezavany polygon
+        }
+
+        return in;
+    }
 
     /*
     public void drawPolygon(List<Integer> points) {

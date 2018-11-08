@@ -11,12 +11,28 @@ public class Raster extends JPanel {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 600;
     private static final int FPS = 1000 / 30;
+    private Integer resizableWidth;
+    private Integer resizableHeight;
     private BufferedImage bi;
 
     public Raster() {
         // inicializace image, nastavení rozměrů (nastavení typu - pro nás nedůležité)
         bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         setLoop();
+    }
+
+    public int getResizableWidth() {
+        return resizableWidth;
+    }
+
+    public int getResizableHeight() {
+        return resizableHeight;
+    }
+
+    public void resize(Dimension size){
+        this.bi = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB);
+        this.resizableWidth = size.width;
+        this.resizableHeight = size.height;
     }
 
     @Override
@@ -42,7 +58,12 @@ public class Raster extends JPanel {
         // https://stackoverflow.com/a/5843470
         Graphics g = bi.getGraphics();
         g.setColor(Color.BLACK);
-        g.clearRect(0, 0, WIDTH, HEIGHT);
+        if(!resizableWidth.equals(null) && !resizableHeight.equals(null)){
+            g.clearRect(0, 0, resizableWidth, resizableHeight);
+        }else{
+            g.clearRect(0, 0, WIDTH, HEIGHT);
+        }
+
     }
 
     public void drawPixel(int x, int y, int color) {

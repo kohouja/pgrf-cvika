@@ -2,8 +2,7 @@ package c_02_utery_18_15;
 
 public class TODOS {
 //    TODO singleton for window
-//    TODO nakreslit cigaro
-//    TODO opakujici se patern vyplnuje
+
 
 
 

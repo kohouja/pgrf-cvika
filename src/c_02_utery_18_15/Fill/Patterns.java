@@ -1,6 +1,7 @@
 package c_02_utery_18_15.Fill;
 
 import c_02_utery_18_15.fileHandler.FileHandler;
+import c_02_utery_18_15.model.Line;
 import c_02_utery_18_15.model.Point;
 import c_02_utery_18_15.view.Raster;
 
@@ -13,6 +14,7 @@ public class Patterns {
     private Raster raster;
     private List<Point> pointsList;
     private List<Point> transformList = new ArrayList<>();
+    private List<Line> lineList = new ArrayList<>();
 
     public void init(Raster raster){
            setRaster(raster);
@@ -24,11 +26,14 @@ public class Patterns {
 
     public Patterns() {
         this.pointsList = new ArrayList<>();
+        loadCigaro();
+        sortPointsByLines();
     }
 
     public List<Point> getPointsList() {
         return pointsList;
     }
+    public List<Line> getLineList(){return lineList;}
 
     public void setPointsList(List<Point> pointsList){
         this.pointsList = pointsList;
@@ -47,13 +52,14 @@ public class Patterns {
 
     public void loadCigaro(){
         fileHandler = new FileHandler();
-        this.setPointsList(fileHandler.load());
-        for(Point point : this.getPointsList()){
-            raster.drawPixel(point.x, point.y, point.color.getRGB());
-        }
+        this.setPointsList(fileHandler.load("cigaro.csv"));
+//        for(Point point : this.getPointsList()){
+//            raster.drawPixel(point.x, point.y, point.color.getRGB());
+//        }
     }
 
     public void drawCigaro(){
+        loadCigaro();
         for(Point point : this.getPointsList()){
             raster.drawPixel(point.x, point.y, point.color.getRGB());
         }
@@ -70,8 +76,52 @@ public class Patterns {
                 minY = point.y;
             }
         }
-        Color color = new Color(255,255,255);
+        Color color = new Color(0,0,0);
         return new Point(minX, minY, color);
+    }
+
+    public Point findMaxPoint(){
+        int maxX = 0;
+        int maxY = 0;
+        for(Point point : pointsList){
+            if(point.x > maxX){
+                maxX = point.x;
+            }
+            if(point.y > maxY){
+                maxY = point.y;
+            }
+        }
+        Color color = new Color(0,0,0);
+        return new Point(maxX, maxY, color);
+    }
+
+    public int getPatternWidth(){
+        return findMaxPoint().x - findZeroPoint().x;
+    }
+
+    public int getPatternHeight(){
+        return findMaxPoint().y - findZeroPoint().y;
+    }
+
+    public void sortPointsByLines(){
+        Point zeroPoint = findZeroPoint();
+        Point maxPoint = findMaxPoint();
+        for(int i = zeroPoint.y; i < maxPoint.y; i++){
+            Line line = new Line();
+            for(Point randomPlacedPoint : pointsList){
+                if(randomPlacedPoint.y == i){
+                    line.getPointList().add(randomPlacedPoint);
+                }
+            }
+            lineList.add(line);
+        }
+    }
+
+    public void drawPatternLine(int numberOfLine, int numberOfColumn){
+        List<Point> thatLine = lineList.get(numberOfLine).getPointList();
+        for(Point point : thatLine){
+            raster.drawPixel(point.x + numberOfColumn, point.y, point.color.getRGB());
+        }
     }
 
     public void transformPattern(int x, int y){
@@ -84,7 +134,23 @@ public class Patterns {
             pointsList.get(i).x = transformList.get(i).x + zeroPoint.x;
             pointsList.get(i).y = transformList.get(i).y + zeroPoint.y;
         }
-
     }
+
+    public List<Point> getAbsolutePointLineList(int newZeroPointX, int numberOfLine, int numberOfRow){
+        List<Point> absolutePointLineList = new ArrayList<>();
+        List<Point> line = lineList.get(numberOfLine).getPointList();
+        Point originZeroPoint = findZeroPoint();
+        int originZeroPointX = originZeroPoint.x;
+        int originZeroPointY = originZeroPoint.y;
+        for(Point point : line){
+            int relativeXposition = point.x - originZeroPointX;
+            int absoluteXposition = relativeXposition + newZeroPointX;
+            int relativeYposition = point.y - originZeroPointY;
+            int absoluteYposition = relativeYposition + numberOfRow*getPatternHeight();
+            absolutePointLineList.add(new Point(absoluteXposition, absoluteYposition, point.color));
+        }
+        return absolutePointLineList;
+    }
+
 
 }

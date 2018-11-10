@@ -11,8 +11,8 @@ public class Raster extends JPanel {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 600;
     private static final int FPS = 1000 / 30;
-    private Integer resizableWidth;
-    private Integer resizableHeight;
+    private Integer resizableWidth = WIDTH;
+    private Integer resizableHeight = HEIGHT;
     private BufferedImage bi;
 
     public Raster() {
@@ -68,6 +68,8 @@ public class Raster extends JPanel {
 
     public void drawPixel(int x, int y, int color) {
         // nastavit pixel do img
+        if (x < 0 || x >= this.getResizableWidth()) return;
+        if (y < 0 || y >= this.getResizableHeight()) return;
         bi.setRGB(x, y, color);
     }
 

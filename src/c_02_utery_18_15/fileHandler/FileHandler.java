@@ -42,9 +42,8 @@ public class FileHandler {
 
     }
 
-    public List<Point> load(){
+    public List<Point> load(String file){
         try{
-            String file = "patterns.csv";
             FileInputStream fileInputStream = new FileInputStream(file);
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream,  "UTF-8");
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);

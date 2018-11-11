@@ -9,10 +9,13 @@ import c_02_utery_18_15.renderer.Renderer;
 import c_02_utery_18_15.view.PgrfWindow;
 import c_02_utery_18_15.view.Raster;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static javax.swing.SwingUtilities.isLeftMouseButton;
 
 public class PgrfController {
     private PgrfWindow pgrfWindow;
@@ -66,22 +69,22 @@ public class PgrfController {
             }
         });
 
-//         raster.addMouseListener(new MouseAdapter() {
-//                    @Override
-//                    public void mousePressed(MouseEvent e) {
-//                       if(!e.isControlDown()){
-//                           polygonPoints.add(new Point(e.getX(), e.getY()));
-//                           if(polygonPoints.size() == 1){
-//                               polygonPoints.add(new Point(e.getX(), e.getY()));
-//                           }else if(SwingUtilities.isRightMouseButton(e)){
-//                               linePoints.add(new Point(e.getX(), e.getY()));
-//                               linePoints.add(new Point(e.getX(), e.getY()));
-//
-//                           }
-//                           update();
-//                       }
-//                    }
-//                });
+         raster.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                       if(!e.isControlDown()){
+                           polygonPoints.add(new Point(e.getX(), e.getY()));
+                           if(polygonPoints.size() == 1){
+                               polygonPoints.add(new Point(e.getX(), e.getY()));
+                           }else if(SwingUtilities.isRightMouseButton(e)){
+                               linePoints.add(new Point(e.getX(), e.getY()));
+                               linePoints.add(new Point(e.getX(), e.getY()));
+
+                           }
+                           update();
+                       }
+                    }
+                });
 
         raster.addMouseListener(new MouseAdapter() {
             @Override
@@ -99,25 +102,25 @@ public class PgrfController {
                 //renderer.drawPolygon(points);
             }
         });
-//        raster.addMouseMotionListener(new MouseAdapter() {
-//            @Override
-//            public void mouseDragged(MouseEvent e) {
-//                if(SwingUtilities.isLeftMouseButton(e)){
-//                    polygonPoints.get(polygonPoints.size() - 1).x = e.getX();
-//                    polygonPoints.get(polygonPoints.size() - 1).y = e.getY();
-//                    renderer.drawPolygon(polygonPoints, 0x00ffff);
-//
-//                }else if(SwingUtilities.isRightMouseButton(e)){
-//                   linePoints.get(linePoints.size() - 1).x = e.getX();
-//                   linePoints.get(linePoints.size() - 1).y = e.getY();
-//                   renderer.drawLines();
-//
-//                }
-//                update();
-////                raster.clear();
-////                renderer.drawDDA(400, 300, e.getX(), e.getY(), 0x00ffff);
-//            }
-//        });
+        raster.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if(SwingUtilities.isLeftMouseButton(e)){
+                    polygonPoints.get(polygonPoints.size() - 1).x = e.getX();
+                    polygonPoints.get(polygonPoints.size() - 1).y = e.getY();
+                    renderer.drawPolygon(polygonPoints, 0x00ffff);
+
+                }else if(SwingUtilities.isRightMouseButton(e)){
+                   linePoints.get(linePoints.size() - 1).x = e.getX();
+                   linePoints.get(linePoints.size() - 1).y = e.getY();
+                   renderer.drawLines();
+
+                }
+                update();
+//                raster.clear();
+//                renderer.drawDDA(400, 300, e.getX(), e.getY(), 0x00ffff);
+            }
+        });
         raster.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {

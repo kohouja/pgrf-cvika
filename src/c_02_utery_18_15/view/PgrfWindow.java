@@ -16,6 +16,7 @@ public class PgrfWindow extends JFrame {
         setTitle("PGRF1 cvičení"); // titulek okna
 
 
+
     }
 
 }

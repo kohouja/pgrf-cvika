@@ -1,11 +1,10 @@
-package c_02_utery_18_15.Fill;
+package c_02_utery_18_15.fill;
 
 import c_02_utery_18_15.model.Edge;
 import c_02_utery_18_15.model.Line;
 import c_02_utery_18_15.model.Point;
 import c_02_utery_18_15.view.Raster;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

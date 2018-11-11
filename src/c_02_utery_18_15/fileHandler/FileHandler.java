@@ -1,6 +1,6 @@
 package c_02_utery_18_15.fileHandler;
 
-import c_02_utery_18_15.Fill.Patterns;
+import c_02_utery_18_15.fill.Patterns;
 import c_02_utery_18_15.model.Point;
 
 
@@ -23,6 +23,7 @@ public class FileHandler {
     public  void setList(List <Point> list){
         this.list = list;
     }
+
     public void save(){
         try{
             File file = new File("patterns.csv");

@@ -13,6 +13,8 @@ public class Main {
             PgrfWindow window = new PgrfWindow();
             new PgrfController(window);
             window.setVisible(true);
+
+
         });
 
         // https://www.google.com/search?q=SwingUtilities.invokeLater

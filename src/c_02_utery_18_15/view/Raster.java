@@ -63,7 +63,8 @@ public class Raster extends JPanel {
         }else{
             g.clearRect(0, 0, WIDTH, HEIGHT);
         }
-
+        g.setColor(Color.WHITE);
+        g.drawString("left click + drag mouse -> draw polygon || F -> fill by pattern || CTRL + left click -> seed fill || Q -> draw clip polygon", 5, resizableHeight - 45);
     }
 
     public void drawPixel(int x, int y, int color) {

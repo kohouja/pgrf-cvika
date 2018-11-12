@@ -27,6 +27,7 @@ public class PgrfController {
     private FileHandler fileHandler;
     private final List<Point> polygonPoints = new ArrayList<>();
     private final List<Point> clipPoints = new ArrayList<>();
+    private final List<Point> clipPolygonPoints = new ArrayList<>();
     private final List<Point> linePoints = new ArrayList<>();
     private final ScanLine scanLine = new ScanLine();
 
@@ -35,6 +36,7 @@ public class PgrfController {
     public PgrfController(PgrfWindow window) {
         initObjects(window);
         initListeners();
+
 
     }
 
@@ -203,7 +205,6 @@ public class PgrfController {
             }
         });
 
-
         raster.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -214,6 +215,20 @@ public class PgrfController {
                 }
             }
         });
+
+        raster.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_Q) {
+                    drawClipPolygon();
+//                    System.out.println(patterns.findZeroPoint().x);
+//                    System.out.println(patterns.findZeroPoint().y);
+
+                }
+
+
+            }
+        });
         // chceme, aby canvas měl focus hned při spuštění
         raster.requestFocus();
     }
@@ -222,6 +237,16 @@ public class PgrfController {
         raster.clear();
         renderer.drawLines();
         renderer.drawPolygon(polygonPoints, 0x00ffff);
+    }
+
+    public void drawClipPolygon(){
+        Point p1 = new Point(5,5);
+        Point p2 = new Point(60,400);
+        Point p3 = new Point(400,500);
+        clipPolygonPoints.add(p1);
+        clipPolygonPoints.add(p2);
+        clipPolygonPoints.add(p3);
+        renderer.drawPolygon(clipPolygonPoints, 0xffffff);
     }
 
 }

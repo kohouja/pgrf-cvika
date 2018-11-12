@@ -1,5 +1,6 @@
 package c_02_utery_18_15.renderer;
 
+import c_02_utery_18_15.model.Edge;
 import c_02_utery_18_15.model.Point;
 import c_02_utery_18_15.view.Raster;
 
@@ -122,13 +123,17 @@ public class Renderer {
         List <Point> in = polygon;
 
         Point p1 = null; //vloz posledni clip point
-
+        p1 = clipPolygon.get(clipPolygon.size()-1);
         for(Point p2 : clipPolygon){
             List<Point> out = new ArrayList<>();
-//            vytvor hranu z bodu p1 a p2
+            Edge edge = new Edge(p1, p2);
+    // vytvor hranu z bodu p1 a p2
 //            Point v1 = in.last
             for(Point v2: in){
 //                TODO algoritmus
+                if(edge.isInside(v2)){
+                 out.add(v2);
+                }
             }
             p1 = p2;
             in = out; // aktualizuj orezavany polygon

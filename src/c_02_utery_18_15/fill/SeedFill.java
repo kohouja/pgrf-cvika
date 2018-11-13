@@ -4,7 +4,7 @@ import c_02_utery_18_15.view.Raster;
 
 public class SeedFill implements Filler {
 
-    private Raster raster;
+    private Raster  raster;
     private int x, y, color, background;
 
     public void init(int x, int y, int color) {

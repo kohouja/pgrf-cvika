@@ -32,7 +32,10 @@ public class ScanLine  implements  Filler{
     }
 
     public void fill(List<Point> fillArea){
-        scanline(fillArea);
+
+           scanline(fillArea);
+
+
     }
 
     public void init(List<Point> points, int fillColor, int edgeColor){
@@ -147,14 +150,25 @@ public class ScanLine  implements  Filler{
                     intersections.add(edgeI.getIntersection(y));
                 }
             }
-            Collections.sort(intersections);
-            if (intersections.size() > 1) {
-                for (int i = 0; i < intersections.size(); i += 2) {
-                    for (int x = intersections.get(i); x < intersections.get(i + 1); x++) {
-                        raster.drawPixel(x, y, fillColor);
+            if(intersections.size()%2 == 0){
+
+                Collections.sort(intersections);
+                if (intersections.size() > 1) {
+                    for (int i = 0; i < intersections.size(); i += 2) {
+//TODO zceknout body za sebou
+                        int comparatedPoint1 = i+1;
+                        int comparatedPoint2 = i+2;
+
+                        if( (i!=comparatedPoint1) && (i!=comparatedPoint2) ){
+                            for (int x = intersections.get(i); x < intersections.get(i + 1); x++) {
+                                raster.drawPixel(x, y, fillColor);
+                            }
+                        }
+
                     }
                 }
             }
+
         }
     }
 

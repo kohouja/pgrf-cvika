@@ -34,6 +34,11 @@ public class PgrfWindow extends JFrame {
         instructions.setFont(font);
         instructions.setForeground(Color.WHITE);
 
+        JPanel jPanel = new JPanel();
+        JButton jButton = new JButton("kokotina");
+        jPanel.add(jButton);
+        add(jPanel, BorderLayout.NORTH);
+
     }
 
 }

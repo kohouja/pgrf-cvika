@@ -120,8 +120,24 @@ public class PgrfController {
                 if(SwingUtilities.isLeftMouseButton(e)) {
 
                 }
-//
+                drawClipPolygon();
                 update();
+                if(polygonPoints.size() > 2){
+                    clippedPolygon = renderer.clip(polygonPoints, clipPolygonPoints);
+//                    if(clippedPolygon.size() != 0) {
+                        if (clippedPolygon.size() > 2) {
+                            scanLine.setRaster(raster);
+                            scanLine.init(clippedPolygon, 0xff0000, 0x00ffff);
+
+                            scanLine.fill(clippedPolygon);
+//                            renderer.drawPolygon(clippedPolygon, 0xff0000);
+                        }
+//                    }
+                }
+                renderer.drawPolygon(polygonPoints, 0x00ffff);
+
+//
+
 //                raster.clear();
 //                renderer.drawDDA(400, 300, e.getX(), e.getY(), 0x00ffff);
             }

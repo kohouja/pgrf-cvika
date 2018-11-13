@@ -10,6 +10,9 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class PgrfWindow extends JFrame {
+    public JButton drawMode, save, load, clipPolygonMode, fillByPattern, clear;
+
+
 
     private Font font = new Font("Arial", Font.PLAIN, 10);
 
@@ -20,7 +23,6 @@ public class PgrfWindow extends JFrame {
         }
         return instance;
     }
-
     private PgrfWindow() {
         // bez tohoto nastavení se okno zavře, ale aplikace stále běží na pozadí
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -35,8 +37,33 @@ public class PgrfWindow extends JFrame {
         instructions.setForeground(Color.WHITE);
 
         JPanel jPanel = new JPanel();
-        JButton jButton = new JButton("kokotina");
-        jPanel.add(jButton);
+
+        this.drawMode = new JButton("DrawMode");
+        jPanel.add(drawMode);
+
+        this.save = new JButton("Save");
+        this.save.setEnabled(false);
+        jPanel.add(save);
+
+        this.load = new JButton("Load");
+        this.load.setEnabled(false);
+        jPanel.add(load);
+
+
+        this.clipPolygonMode = new JButton("ClipPolygonMode");
+        jPanel.add(clipPolygonMode);
+
+        this.fillByPattern = new JButton("FillByPattern");
+        this.fillByPattern.setEnabled(false);
+        jPanel.add(fillByPattern);
+
+        this.clear = new JButton("Clear");
+        jPanel.add(clear);
+
+
+
+
+
         add(jPanel, BorderLayout.NORTH);
 
     }

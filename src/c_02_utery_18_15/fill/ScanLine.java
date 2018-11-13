@@ -159,7 +159,13 @@ public class ScanLine  implements  Filler{
                         int comparatedPoint1 = i+1;
                         int comparatedPoint2 = i+2;
 
+                        int count = 0;
+                        while(comparatedPoint1 == intersections.get(i+count)){
+
+                        }
+
                         if( (i!=comparatedPoint1) && (i!=comparatedPoint2) ){
+
                             for (int x = intersections.get(i); x < intersections.get(i + 1); x++) {
                                 raster.drawPixel(x, y, fillColor);
                             }

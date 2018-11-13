@@ -116,30 +116,60 @@ public class Renderer {
 
     }
 
-    public List<Point> clip(List<Point> polygon, List<Point> clipPolygon){
-//        in  - seznam vrcholu orezavaneho polygonu (na tabuli ten cerny)
-//        slip polygon - orezavaci polygon (na tabuli ten zleny)
-//        out - seznam vrcholu orezavaneho polygonu
-        List <Point> in = polygon;
+    public List<Point> clip(List<Point> polygonIn, List<Point> clippingArea){
+////        in  - seznam vrcholu orezavaneho polygonu (na tabuli ten cerny)
+////        clip polygon - orezavaci polygon (na tabuli ten zleny)
+////        out - seznam vrcholu orezavaneho polygonu
+//        List <Point> in  = new ArrayList<>();
+//
+//        Point p1 = clipPolygon.get(clipPolygon.size()-1);
+//        for(Point p2 : clipPolygon){
+//            Edge edge = new Edge(p1, p2);
+//            edge.orientate();
+//    // vytvor hranu z bodu p1 a p2
+////            Point v1 = in.last
+//            for(Point v2: in){
+////                TODO algoritmus
+//                if(edge.isInside(v2)){
+//                 out.add(v2);
+//                }
+//            }
+//            p1 = p2;
+//            in = out; // aktualizuj orezavany polygon
+//        }
+//
+//        return in;
+        List<Point> input;
 
-        Point p1 = null; //vloz posledni clip point
-        p1 = clipPolygon.get(clipPolygon.size()-1);
-        for(Point p2 : clipPolygon){
-            List<Point> out = new ArrayList<>();
-            Edge edge = new Edge(p1, p2);
-    // vytvor hranu z bodu p1 a p2
-//            Point v1 = in.last
-            for(Point v2: in){
-//                TODO algoritmus
-                if(edge.isInside(v2)){
-                 out.add(v2);
-                }
-            }
-            p1 = p2;
-            in = out; // aktualizuj orezavany polygon
+        List<Point> out = new ArrayList<>();
+        for(Point pointIn : polygonIn){
+            out.add(pointIn);
+        }
+        List<Edge> clippingEdges = new ArrayList<>();
+        for (int i = 0; i < clippingArea.size(); i++) {
+            clippingEdges.add(new Edge(clippingArea.get(i), clippingArea.get((i + 1) % clippingArea.size())));
         }
 
-        return in;
+        for (Edge edge : clippingEdges) {
+
+            input = new ArrayList<>(out);
+            out.clear();
+
+            Point v1 = input.get(input.size() - 1);
+            for (Point v2 : input) {
+                if (edge.isInside(v2)) {
+                    if (!edge.isInside(v1))
+                        out.add(edge.getIntersection(v1, v2));
+                    out.add(v2);
+                } else {
+                    if (edge.isInside(v1))
+                        out.add(edge.getIntersection(v1, v2));
+                }
+                v1 = v2;
+            }
+        }
+
+        return out;
     }
 
     /*

@@ -13,7 +13,15 @@ public class PgrfWindow extends JFrame {
 
     private Font font = new Font("Arial", Font.PLAIN, 10);
 
-    public PgrfWindow() {
+    private static PgrfWindow instance;
+    public static PgrfWindow getInstance(){
+        if(instance == null){
+            instance = new PgrfWindow();
+        }
+        return instance;
+    }
+
+    private PgrfWindow() {
         // bez tohoto nastavení se okno zavře, ale aplikace stále běží na pozadí
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(Raster.WIDTH, Raster.HEIGHT); // velikost okna

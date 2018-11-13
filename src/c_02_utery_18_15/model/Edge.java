@@ -65,15 +65,30 @@ public class Edge {
        return intersection;
    }
 
-   public boolean isInside(Point point){
-        Point t = new Point(x2 - x1, y2 - y1);
-        Point n = new Point(t.y, -t.x);
-        Point v = new Point(point.x - x1, point.y - y1);
+   public boolean isInside(Point p){
+       int x = (int) p.x;
+       int y = (int) p.y;
 
-        return (v.x * n.x + v.y * n.y < 0);
+       float dot = (x - x1) * (y1 - y2) + (y - y1) * (x2 - x1);
+
+       return dot <= 0;
    }
 
-   public Point getIntersection(Point v1, Point v2){
-        return null;
+   public Point getIntersection(Point p1, Point p2){
+
+       double x3 = p1.x;
+       double x4 = p2.x;
+
+       double y3 = p1.y;
+       double y4 = p2.y;
+
+       double denum = ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+       if (denum == 0)
+           return null;
+
+       double x = ((x1 * y2 - x2 * y1) * (x3 - x4) - (x3 * y4 - x4 * y3) * (x1 - x2)) / denum;
+       double y = ((x1 * y2 - x2 * y1) * (y3 - y4) - (x3 * y4 - x4 * y3) * (y1 - y2)) / denum;
+
+       return new Point((int) x, (int) y);
    }
 }

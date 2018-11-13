@@ -26,7 +26,7 @@ public class PgrfController {
     private Patterns patterns;
     private FileHandler fileHandler;
     private final List<Point> polygonPoints = new ArrayList<>();
-    private final List<Point> clipPoints = new ArrayList<>();
+    private List<Point> clippedPolygon;
     private final List<Point> clipPolygonPoints = new ArrayList<>();
     private final List<Point> linePoints = new ArrayList<>();
     private final ScanLine scanLine = new ScanLine();
@@ -81,8 +81,8 @@ public class PgrfController {
                            }else if(SwingUtilities.isRightMouseButton(e)){
                                linePoints.add(new Point(e.getX(), e.getY()));
                                linePoints.add(new Point(e.getX(), e.getY()));
-
                            }
+
                            update();
                        }
                     }
@@ -113,14 +113,28 @@ public class PgrfController {
                     renderer.drawPolygon(polygonPoints, 0x00ffff);
 
                 }else if(SwingUtilities.isRightMouseButton(e)){
-                   linePoints.get(linePoints.size() - 1).x = e.getX();
-                   linePoints.get(linePoints.size() - 1).y = e.getY();
-                   renderer.drawLines();
+
 
                 }
+
+                if(SwingUtilities.isLeftMouseButton(e)) {
+
+                }
+//
                 update();
 //                raster.clear();
 //                renderer.drawDDA(400, 300, e.getX(), e.getY(), 0x00ffff);
+            }
+        });
+        raster.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+//                if(clippedPolygon != null){
+//                    if (clippedPolygon.size() > 2) {
+//
+//                    }
+//                }
+
             }
         });
         raster.addKeyListener(new KeyAdapter() {
@@ -221,6 +235,18 @@ public class PgrfController {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_Q) {
                     drawClipPolygon();
+                    clippedPolygon = renderer.clip(polygonPoints, clipPolygonPoints);
+                    if(clippedPolygon != null) {
+                        if (clippedPolygon.size() > 2) {
+
+                            scanLine.setRaster(raster);
+                            scanLine.init(clippedPolygon, 0xff0000, 0x00ffff);
+
+                            scanLine.fill(clippedPolygon);
+                            renderer.drawPolygon(clippedPolygon, 0xff0000);
+
+                        }
+                    }
 //                    System.out.println(patterns.findZeroPoint().x);
 //                    System.out.println(patterns.findZeroPoint().y);
 
@@ -237,6 +263,7 @@ public class PgrfController {
         raster.clear();
         renderer.drawLines();
         renderer.drawPolygon(polygonPoints, 0x00ffff);
+        drawClipPolygon();
     }
 
     public void drawClipPolygon(){

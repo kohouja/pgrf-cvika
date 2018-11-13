@@ -31,6 +31,10 @@ public class ScanLine  implements  Filler{
         scanline();
     }
 
+    public void fill(List<Point> fillArea){
+        scanline(fillArea);
+    }
+
     public void init(List<Point> points, int fillColor, int edgeColor){
         this.points = points;
         this.fillColor = fillColor;
@@ -107,6 +111,51 @@ public class ScanLine  implements  Filler{
         }
 //        obtahni hranice
 //        renderer.drawPolygon(points. edgeColor);
+    }
+
+    private void scanline(List <Point> fillArea) {
+        int minY = 0;
+        int maxY = 0;
+        for (int i = 0; i < fillArea.size(); i++) {
+            if (fillArea.get(i).y > maxY) {
+                maxY = fillArea.get(i).y;
+            }
+            if (fillArea.get(i).y < minY) {
+                minY = fillArea.get(i).y;
+            }
+        }
+        List<Edge> edges = new ArrayList<>();
+        for (int a = 0; a < fillArea.size() - 1; a++) {
+            Edge edge = new Edge(fillArea.get(a), fillArea.get(a + 1));
+            if (!edge.isHorizontal()) {
+                edge.orientate();
+                edges.add(edge);
+            }
+
+        }
+        Edge edge = new Edge(fillArea.get(0), fillArea.get(fillArea.size() - 1));
+        if (!edge.isHorizontal()) {
+            edge.orientate();
+            edges.add(edge);
+        }
+        for (int y = minY; y <= maxY; y++) {
+            List<Integer> intersections = new ArrayList<>();
+            for (Edge edgeI : edges) {
+                if (edgeI.intersectionExists(y)) {
+                    intersections.add(edgeI.getIntersection(y));
+                } else if (edgeI.getY1() == y) {
+                    intersections.add(edgeI.getIntersection(y));
+                }
+            }
+            Collections.sort(intersections);
+            if (intersections.size() > 1) {
+                for (int i = 0; i < intersections.size(); i += 2) {
+                    for (int x = intersections.get(i); x < intersections.get(i + 1); x++) {
+                        raster.drawPixel(x, y, fillColor);
+                    }
+                }
+            }
+        }
     }
 
 

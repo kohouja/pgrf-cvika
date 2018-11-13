@@ -10,7 +10,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class PgrfWindow extends JFrame {
-    public JButton drawMode, save, load, clipPolygonMode, fillByPattern, clear;
+    public JButton drawMode, save, load, clipPolygonMode, fillByPattern, scanLineFill,clear;
+    public LoadDialog loadDialog;
 
 
 
@@ -56,6 +57,10 @@ public class PgrfWindow extends JFrame {
         this.fillByPattern = new JButton("FillByPattern");
         this.fillByPattern.setEnabled(false);
         jPanel.add(fillByPattern);
+
+        this.scanLineFill = new JButton("ScanLineFill");
+        this.scanLineFill.setEnabled(false);
+        jPanel.add(scanLineFill);
 
         this.clear = new JButton("Clear");
         jPanel.add(clear);

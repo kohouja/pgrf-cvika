@@ -50,12 +50,14 @@ public class Patterns {
 
     }
 
+    public void initPattern(){
+        fileHandler = new FileHandler();
+        this.setPointsList(fileHandler.load("patterns.csv"));
+    }
+
     public void loadCigaro(){
         fileHandler = new FileHandler();
-        this.setPointsList(fileHandler.load("cigaro.csv"));
-//        for(Point point : this.getPointsList()){
-//            raster.drawPixel(point.x, point.y, point.color.getRGB());
-//        }
+        this.setPointsList(fileHandler.load("patterns.csv"));
     }
 
     public void drawCigaro(){

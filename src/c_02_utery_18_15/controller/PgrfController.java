@@ -7,6 +7,7 @@ import c_02_utery_18_15.fill.SeedFill;
 import c_02_utery_18_15.fileHandler.FileHandler;
 import c_02_utery_18_15.model.Point;
 import c_02_utery_18_15.renderer.Renderer;
+import c_02_utery_18_15.view.LoadDialog;
 import c_02_utery_18_15.view.PgrfWindow;
 import c_02_utery_18_15.view.Raster;
 
@@ -99,7 +100,9 @@ public class PgrfController {
                clipMode = clipMode? false : true;
                if(clipMode){
                    pgrfWindow.fillByPattern.setEnabled(clipMode);
+                   pgrfWindow.scanLineFill.setEnabled(clipMode);
                }else{
+                   pgrfWindow.scanLineFill.setEnabled(clipMode);
                    pgrfWindow.fillByPattern.setEnabled(clipMode);
                }
                System.out.println(clipMode);
@@ -123,7 +126,31 @@ public class PgrfController {
        pgrfWindow.load.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-                   patterns.drawCigaro();
+//                   patterns.drawCigaro();
+//               TODO fix load dialog and set variable way to loaded pattern
+               pgrfWindow.loadDialog = new LoadDialog();
+           }
+       });
+
+       pgrfWindow.fillByPattern.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               scanLine.setRaster(raster);
+               scanLine.init(polygonPoints, 0x000000, 0x00ffff);
+               scanLine.fill();
+               update();
+               scanLine.fillByPattern();
+               renderer.drawPolygon(polygonPoints, 0x00ffff);
+           }
+       });
+
+       pgrfWindow.scanLineFill.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               scanLine.setRaster(raster);
+               scanLine.init(polygonPoints, 0xff0000, 0x00ffff);
+               scanLine.fill();
+               renderer.drawPolygon(polygonPoints, 0x00ffff);
            }
        });
 
@@ -142,7 +169,7 @@ public class PgrfController {
        raster.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                   if(clipMode){
+                   if(clipMode && !e.isControlDown()){
                        polygonPoints.add(new Point(e.getX(), e.getY()));
                        if(polygonPoints.size() == 1){
                            polygonPoints.add(new Point(e.getX(), e.getY()));
@@ -165,7 +192,13 @@ public class PgrfController {
                 } else {
                     raster.drawPixel(e.getX(), e.getY(), 0xffffff);
                 }
+                if(drawMode && e.isShiftDown()){
+                    patterns.transformPattern(e.getX(), e.getY());
+                    raster.clear();
+                    patterns.drawCigaro();
+                }
             }
+
         });
 
         raster.addMouseMotionListener(new MouseAdapter() {
@@ -192,88 +225,15 @@ public class PgrfController {
                        }
 
                    }
+
                    renderer.drawPolygon(polygonPoints, 0x00ffff);
+
                }
-            }
-        });
-
-        raster.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                //System.out.println(e.getKeyCode());
-                // na klávesu C vymazat plátno
-                if (e.getKeyCode() == KeyEvent.VK_C) {
-                    raster.clear();
-                }
-            }
-        });
-
-        raster.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_F) {
-                    System.out.println("kokot");
-                    scanLine.setRaster(raster);
-                    scanLine.init(polygonPoints, 0xff0000, 0x00ffff);
-//                    scanLine.fill();
-                    System.out.println("e = [" + e + "]");
-                    scanLine.fillByPattern();
-                    renderer.drawPolygon(polygonPoints, 0x00ffff);
-
-
-                }
-
-            }
-        });
-        raster.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_S) {
-                    if(!seedFillSwitch){
-                        seedFillSwitch = true;
-                    }else{
-                        seedFillSwitch = false;
-                    }
-                }
-            }
-        });
-
-        raster.addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if(e.isAltDown()){
+               if(drawMode){
                     int color = 0xffffff;
                     raster.drawPixel(e.getX(), e.getY(), color);
                     patterns.getPointsList().add(new Point(e.getX(), e.getY(), new Color(color)));
-                }
-            }
-        });
-
-        raster.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_U) {
-                    patterns.getPointsList().add(patterns.findZeroPoint());
-                    if(fileHandler != null){
-                        fileHandler.setList(patterns.getPointsList());
-                    }else{
-                        fileHandler = new FileHandler(patterns.getPointsList());
-                    }
-
-                    fileHandler.save();
-                }
-
-
-            }
-        });
-        raster.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_N) {
-                    patterns.drawCigaro();
-                }
-
-
+               }
             }
         });
 

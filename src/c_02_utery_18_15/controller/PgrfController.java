@@ -263,6 +263,7 @@ public class PgrfController {
         raster.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+
                 if(e.isShiftDown()){
                     patterns.transformPattern(e.getX(), e.getY());
                     raster.clear();
@@ -288,6 +289,7 @@ public class PgrfController {
         polygonPoints.clear();
         clippedPolygon.clear();
         linePoints.clear();
+        Math.atan2()
     }
 
 }

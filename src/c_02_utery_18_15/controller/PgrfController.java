@@ -72,6 +72,7 @@ public class PgrfController {
     }
 
     private void initListeners() {
+
         pgrfWindow.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -80,11 +81,14 @@ public class PgrfController {
             }
         });
 
+
+
         pgrfWindow.drawMode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawMode = drawMode? false : true;
                 if(drawMode){
+                    totalClear();
                     pgrfWindow.save.setEnabled(drawMode);
                     pgrfWindow.load.setEnabled(drawMode);
                 }else{
@@ -154,7 +158,20 @@ public class PgrfController {
        pgrfWindow.fillByPattern.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-               patterns.loadCigaro();
+               pgrfWindow.fillByPatternDialog.setVisible(true);
+
+           }
+       });
+
+       pgrfWindow.fillByPatternDialog.load.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               String path = pgrfWindow.fillByPatternDialog.file.getText();
+               if(path != null && path != ""){
+                   patterns.loadPattern(path);
+               }else{
+                   patterns.loadCigaro();
+               }
                patterns.sortPointsByLines();
                scanLine.setRaster(raster);
                scanLine.init(polygonPoints, 0x000000, 0x00ffff);
@@ -192,16 +209,22 @@ public class PgrfController {
        raster.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                   if(clipMode && !e.isControlDown()){
+                   if(clipMode && SwingUtilities.isLeftMouseButton(e) && !e.isControlDown()){
                        polygonPoints.add(new Point(e.getX(), e.getY()));
                        if(polygonPoints.size() == 1){
                            polygonPoints.add(new Point(e.getX(), e.getY()));
-                       }else if(SwingUtilities.isRightMouseButton(e)){
-                           linePoints.add(new Point(e.getX(), e.getY()));
-                           linePoints.add(new Point(e.getX(), e.getY()));
                        }
+//                       else if(SwingUtilities.isRightMouseButton(e)){
+//                           linePoints.add(new Point(e.getX(), e.getY()));
+//                           linePoints.add(new Point(e.getX(), e.getY()));
+//                       }
 
                        update();
+                   }
+                   if(clipMode && SwingUtilities.isRightMouseButton(e)){
+                       if(clipPolygonFactory.isGoodPoint(new Point(e.getX(), e.getY()))){
+                           clipPolygonFactory.getPolygonPoints().add(new Point(e.getX(), e.getY()));
+                       }
                    }
                 }
        });
@@ -218,7 +241,7 @@ public class PgrfController {
                 if(drawMode && e.isShiftDown()){
                     patterns.transformPattern(e.getX(), e.getY());
                     raster.clear();
-                    patterns.drawCigaro();
+                    patterns.drawPattern();
                 }
             }
 
@@ -227,12 +250,11 @@ public class PgrfController {
         raster.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-               if(clipMode){
+               if(clipMode && SwingUtilities.isLeftMouseButton(e) && !e.isControlDown()){
                    if(SwingUtilities.isLeftMouseButton(e)){
                        polygonPoints.get(polygonPoints.size() - 1).x = e.getX();
                        polygonPoints.get(polygonPoints.size() - 1).y = e.getY();
                        renderer.drawPolygon(polygonPoints, 0x00ffff);
-
                    }
                    renderer.drawPolygon(clipPolygonFactory.getPolygonPoints(), clipPolygonFactory.getColor());
                    update();
@@ -252,6 +274,14 @@ public class PgrfController {
                    renderer.drawPolygon(polygonPoints, 0x00ffff);
 
                }
+               if(clipMode && SwingUtilities.isRightMouseButton(e)){
+                   clipPolygonFactory.originX = clipPolygonFactory.getPolygonPoints().get(clipPolygonFactory.getPolygonPoints().size()-1).x;
+                   clipPolygonFactory.originY = clipPolygonFactory.getPolygonPoints().get(clipPolygonFactory.getPolygonPoints().size()-1).y;
+                   clipPolygonFactory.getPolygonPoints().get(clipPolygonFactory.getPolygonPoints().size()-1).x = e.getX();
+                   clipPolygonFactory.getPolygonPoints().get(clipPolygonFactory.getPolygonPoints().size()-1).y = e.getY();
+                   update();
+                   renderer.drawPolygon(clipPolygonFactory.getPolygonPoints(), Color.WHITE.getRGB());
+               }
                if(drawMode){
                     int color = 0xffffff;
                     raster.drawPixel(e.getX(), e.getY(), color);
@@ -262,12 +292,11 @@ public class PgrfController {
 
         raster.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-
-                if(e.isShiftDown()){
-                    patterns.transformPattern(e.getX(), e.getY());
-                    raster.clear();
-                    patterns.drawCigaro();
+            public void mouseReleased(MouseEvent e) {
+                if(clipMode && SwingUtilities.isRightMouseButton(e)){
+                    if(clipPolygonFactory.isGoodPoint(new Point(e.getX(), e.getY()))){
+                        clipPolygonFactory.getPolygonPoints().add(new Point(e.getX(), e.getY()));
+                    }
                 }
             }
         });
@@ -289,7 +318,8 @@ public class PgrfController {
         polygonPoints.clear();
         clippedPolygon.clear();
         linePoints.clear();
-        Math.atan2()
+        linePoints.clear();
+//        clipPolygonFactory.getPolygonPoints().clear();
     }
 
 }

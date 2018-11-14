@@ -68,6 +68,11 @@ public class Patterns {
         }
     }
 
+    public void loadPattern(String path){
+        fileHandler = new FileHandler();
+        this.setPointsList(fileHandler.load(path));
+    }
+
     public Point findZeroPoint(){
         int minX = pointsList.get(0).x;
         int minY = pointsList.get(0).y;

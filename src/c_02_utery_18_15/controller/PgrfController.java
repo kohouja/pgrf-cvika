@@ -10,6 +10,7 @@ import c_02_utery_18_15.renderer.Renderer;
 import c_02_utery_18_15.view.LoadDialog;
 import c_02_utery_18_15.view.PgrfWindow;
 import c_02_utery_18_15.view.Raster;
+import c_02_utery_18_15.view.SaveDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,10 +30,10 @@ public class PgrfController {
     private SeedFill seedFill;
     private boolean seedFillSwitch;
     private Patterns patterns;
-    private FileHandler fileHandler;
+    private FileHandler fileHandler = new FileHandler();
     private ClipPolygonFactory clipPolygonFactory;
     private final List<Point> polygonPoints = new ArrayList<>();
-    private List<Point> clippedPolygon;
+    private List<Point> clippedPolygon = new ArrayList<>();
     private final List<Point> clipPolygonPoints = new ArrayList<>();
     private final List<Point> linePoints = new ArrayList<>();
     private final ScanLine scanLine = new ScanLine();
@@ -101,9 +102,12 @@ public class PgrfController {
                if(clipMode){
                    pgrfWindow.fillByPattern.setEnabled(clipMode);
                    pgrfWindow.scanLineFill.setEnabled(clipMode);
+                   pgrfWindow.totalClear.setEnabled(clipMode);
+
                }else{
                    pgrfWindow.scanLineFill.setEnabled(clipMode);
                    pgrfWindow.fillByPattern.setEnabled(clipMode);
+                   pgrfWindow.totalClear.setEnabled(clipMode);
                }
                System.out.println(clipMode);
            }
@@ -112,29 +116,46 @@ public class PgrfController {
        pgrfWindow.save.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-               patterns.getPointsList().add(patterns.findZeroPoint());
-               if(fileHandler != null){
-                   fileHandler.setList(patterns.getPointsList());
-               }else{
-                   fileHandler = new FileHandler(patterns.getPointsList());
-               }
-
-               fileHandler.save();
+               pgrfWindow.saveDialog.setLocationRelativeTo(pgrfWindow);
+               pgrfWindow.saveDialog.setVisible(true);
            }
        });
+       pgrfWindow.saveDialog.save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                patterns.getPointsList().add(patterns.findZeroPoint());
+                fileHandler.setList(patterns.getPointsList());
+                fileHandler.save(pgrfWindow.saveDialog.file.getText());
+                pgrfWindow.saveDialog.setVisible(false);
+            }
+       });
+
+
 
        pgrfWindow.load.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-//                   patterns.drawCigaro();
-//               TODO fix load dialog and set variable way to loaded pattern
-               pgrfWindow.loadDialog = new LoadDialog();
+               pgrfWindow.loadDialog.setLocationRelativeTo(pgrfWindow);
+               pgrfWindow.loadDialog.setVisible(true);
            }
        });
+
+        pgrfWindow.loadDialog.load.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                patterns.setPointsList(fileHandler.load(pgrfWindow.loadDialog.file.getText()));
+                patterns.drawPattern();
+                pgrfWindow.loadDialog.setVisible(false);
+            }
+        });
+
+
 
        pgrfWindow.fillByPattern.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
+               patterns.loadCigaro();
+               patterns.sortPointsByLines();
                scanLine.setRaster(raster);
                scanLine.init(polygonPoints, 0x000000, 0x00ffff);
                scanLine.fill();
@@ -158,11 +179,13 @@ public class PgrfController {
            @Override
            public void actionPerformed(ActionEvent e) {
                raster.clear();
-               if(clipMode){
-//                   TODO smazat pyco polygony atd...
-               }else if(drawMode){
-//                   TODO smazat cigaro a nebo i nakreslenej navrh
-               }
+           }
+       });
+
+       pgrfWindow.totalClear.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               totalClear();
            }
        });
 
@@ -259,6 +282,12 @@ public class PgrfController {
         renderer.drawPolygon(clipPolygonFactory.getPolygonPoints(), Color.WHITE.getRGB());
     }
 
-
+    public void totalClear(){
+        raster.clear();
+        patterns.totalClear();
+        polygonPoints.clear();
+        clippedPolygon.clear();
+        linePoints.clear();
+    }
 
 }

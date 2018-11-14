@@ -1,5 +1,7 @@
 package c_02_utery_18_15.view;
 
+import javafx.scene.layout.Pane;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,12 +12,21 @@ public class LoadDialog extends JDialog{
     public LoadDialog() {
         setTitle("Load pattern file");
 
-        JPanel panel = new JPanel(new BorderLayout());
+
 
         this.load = new JButton("Load");
-        panel.add(load, BorderLayout.EAST);
+        add(load, BorderLayout.EAST);
 
         this.file = new JTextField();
-        panel.add(file, BorderLayout.WEST);
+        file.setToolTipText("neco");
+        file.setPreferredSize(new Dimension(250, 20));
+        add(file, BorderLayout.WEST);
+
+
+
+
+        pack();
+        setVisible(true);
     }
+
 }

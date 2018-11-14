@@ -12,7 +12,7 @@ import java.util.List;
 public class FileHandler {
     private Patterns patterns;
     private List<Point> list;
-    private final File FILE = new File("patterns.csv");
+//    private final File FILE = new File("patterns.csv");
     public FileHandler(List<Point> list) {
         this.list = list;
     }
@@ -25,13 +25,22 @@ public class FileHandler {
     }
 
     public void save(){
-        try{
             File file = new File("patterns.csv");
-            FileWriter fileWriter = new FileWriter(file);
+            writeIntoFile(file);
+    }
+
+    public void save(String path){
+        File file = new File(path);
+          writeIntoFile(file);
+    }
+
+    private void writeIntoFile(File file){
+            try{
+                FileWriter fileWriter = new FileWriter(file);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             for(Point point : list){
-               bufferedWriter.write(point.x + ";" + point.y + ";" + point.color.getRed() + ";" + point.color.getGreen() + ";" + point.color.getBlue());
-               bufferedWriter.newLine();
+                bufferedWriter.write(point.x + ";" + point.y + ";" + point.color.getRed() + ";" + point.color.getGreen() + ";" + point.color.getBlue());
+                bufferedWriter.newLine();
             }
             bufferedWriter.flush();
             bufferedWriter.close();
@@ -40,7 +49,6 @@ public class FileHandler {
         }catch (Exception e){
             System.out.println(e);
         }
-
     }
 
     public List<Point> load(String file){

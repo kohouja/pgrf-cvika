@@ -172,13 +172,4 @@ public class Renderer {
         return out;
     }
 
-    /*
-    public void drawPolygon(List<Integer> points) {
-        clear();
-        drawLine(points.get(0), points.get(1), points.get(2), points.get(3));
-        i += 2;
-        // for cyklus po dvou se správným omezením
-        drawLine(points.get(i), points.get(i + 1), points.get(i + 2), points.get(i + 3));
-    }
-    */
 }

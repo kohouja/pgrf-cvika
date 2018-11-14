@@ -10,10 +10,9 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class PgrfWindow extends JFrame {
-    public JButton drawMode, save, load, clipPolygonMode, fillByPattern, scanLineFill,clear;
-    public LoadDialog loadDialog;
-
-
+    public JButton drawMode, save, load, clipPolygonMode, fillByPattern, scanLineFill, clear, totalClear;
+    public LoadDialog loadDialog = new LoadDialog();
+    public SaveDialog saveDialog = new SaveDialog();
 
     private Font font = new Font("Arial", Font.PLAIN, 10);
 
@@ -65,11 +64,20 @@ public class PgrfWindow extends JFrame {
         this.clear = new JButton("Clear");
         jPanel.add(clear);
 
+        this.totalClear = new JButton("TotalClear");
+        totalClear.setEnabled(false);
+        jPanel.add(totalClear);
+
+        saveDialog.setVisible(false);
+        loadDialog.setVisible(false);
 
 
 
 
         add(jPanel, BorderLayout.NORTH);
+
+
+
 
     }
 

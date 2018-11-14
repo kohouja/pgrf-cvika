@@ -26,8 +26,6 @@ public class Patterns {
 
     public Patterns() {
         this.pointsList = new ArrayList<>();
-        loadCigaro();
-        sortPointsByLines();
     }
 
     public List<Point> getPointsList() {
@@ -38,6 +36,7 @@ public class Patterns {
     public void setPointsList(List<Point> pointsList){
         this.pointsList = pointsList;
     }
+
 
     public void drawCircle(){
 
@@ -50,18 +49,20 @@ public class Patterns {
 
     }
 
-    public void initPattern(){
-        fileHandler = new FileHandler();
-        this.setPointsList(fileHandler.load("patterns.csv"));
-    }
 
     public void loadCigaro(){
         fileHandler = new FileHandler();
-        this.setPointsList(fileHandler.load("patterns.csv"));
+        this.setPointsList(fileHandler.load("cigaro.csv"));
     }
 
     public void drawCigaro(){
         loadCigaro();
+        for(Point point : this.getPointsList()){
+            raster.drawPixel(point.x, point.y, point.color.getRGB());
+        }
+    }
+
+    public void drawPattern(){
         for(Point point : this.getPointsList()){
             raster.drawPixel(point.x, point.y, point.color.getRGB());
         }
@@ -154,5 +155,11 @@ public class Patterns {
         return absolutePointLineList;
     }
 
+    public void totalClear(){
+        raster.clear();
+        pointsList.clear();
+        transformList.clear();
+        lineList.clear();
+    }
 
 }

@@ -87,6 +87,12 @@ public class PgrfController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawMode = drawMode? false : true;
+                if(clipMode){
+                    clipMode = false;
+                    pgrfWindow.scanLineFill.setEnabled(clipMode);
+                    pgrfWindow.fillByPattern.setEnabled(clipMode);
+                    pgrfWindow.totalClear.setEnabled(clipMode);
+                }
                 if(drawMode){
                     totalClear();
                     pgrfWindow.save.setEnabled(drawMode);
@@ -103,6 +109,11 @@ public class PgrfController {
            @Override
            public void actionPerformed(ActionEvent e) {
                clipMode = clipMode? false : true;
+               if(drawMode){
+                   drawMode = false;
+                   pgrfWindow.save.setEnabled(drawMode);
+                   pgrfWindow.load.setEnabled(drawMode);
+               }
                if(clipMode){
                    pgrfWindow.fillByPattern.setEnabled(clipMode);
                    pgrfWindow.scanLineFill.setEnabled(clipMode);
@@ -148,6 +159,7 @@ public class PgrfController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 patterns.setPointsList(fileHandler.load(pgrfWindow.loadDialog.file.getText()));
+                raster.clear();
                 patterns.drawPattern();
                 pgrfWindow.loadDialog.setVisible(false);
             }
@@ -159,7 +171,7 @@ public class PgrfController {
            @Override
            public void actionPerformed(ActionEvent e) {
                pgrfWindow.fillByPatternDialog.setVisible(true);
-
+               pgrfWindow.fillByPatternDialog.setLocationRelativeTo(pgrfWindow);
            }
        });
 
@@ -179,6 +191,7 @@ public class PgrfController {
                update();
                scanLine.fillByPattern();
                renderer.drawPolygon(polygonPoints, 0x00ffff);
+               pgrfWindow.fillByPatternDialog.setVisible(false);
            }
        });
 
@@ -296,6 +309,9 @@ public class PgrfController {
                 if(clipMode && SwingUtilities.isRightMouseButton(e)){
                     if(clipPolygonFactory.isGoodPoint(new Point(e.getX(), e.getY()))){
                         clipPolygonFactory.getPolygonPoints().add(new Point(e.getX(), e.getY()));
+                    }else{
+                        clipPolygonFactory.getPolygonPoints().get(clipPolygonFactory.getPolygonPoints().size()-1).x = clipPolygonFactory.originX;
+                        clipPolygonFactory.getPolygonPoints().get(clipPolygonFactory.getPolygonPoints().size()-1).y = clipPolygonFactory.originY;
                     }
                 }
             }

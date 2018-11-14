@@ -12,6 +12,7 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             PgrfWindow window = PgrfWindow.getInstance();
             new PgrfController(window);
+            window.setExtendedState(Frame.MAXIMIZED_BOTH);
             window.setVisible(true);
 
 

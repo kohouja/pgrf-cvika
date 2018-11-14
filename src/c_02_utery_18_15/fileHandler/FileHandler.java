@@ -52,6 +52,7 @@ public class FileHandler {
     }
 
     public List<Point> load(String file){
+        list = new ArrayList<>();
         try{
             FileInputStream fileInputStream = new FileInputStream(file);
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream,  "UTF-8");

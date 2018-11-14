@@ -33,6 +33,7 @@ public class Raster extends JPanel {
         this.bi = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB);
         this.resizableWidth = size.width;
         this.resizableHeight = size.height;
+        setLoop();
     }
 
     @Override
@@ -64,7 +65,7 @@ public class Raster extends JPanel {
             g.clearRect(0, 0, WIDTH, HEIGHT);
         }
         g.setColor(Color.WHITE);
-        g.drawString("ClipPolygonMode -> CTRL + left click -> seed fill", 5, resizableHeight - 80);
+        g.drawString("Change drawn pattern position -> SHIFT + left mouse click || Seed fill -> ClipPolygonMode -> CTRL + left click || to fillByDefaultPattern write to text line in load modal: cigaro.csv", 5, resizableHeight - 80);
     }
 
     public void drawPixel(int x, int y, int color) {

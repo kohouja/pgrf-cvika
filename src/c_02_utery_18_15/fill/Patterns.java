@@ -69,6 +69,7 @@ public class Patterns {
     }
 
     public void loadPattern(String path){
+        pointsList.clear();
         fileHandler = new FileHandler();
         this.setPointsList(fileHandler.load(path));
     }
